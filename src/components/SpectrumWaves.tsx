@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import './SpectrumWaves.css';
 
 const SpectrumWaves = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,8 +26,8 @@ const SpectrumWaves = () => {
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height * 0.55;
-            const numLines = 50; // More lines for layered depth
-            const lineSpacing = 12;
+            const numLines = 50; // Exact from reference
+            const lineSpacing = 12; // Exact from reference
 
             // Draw soft, overlapping sine-like waves
             for (let i = -numLines / 2; i <= numLines / 2; i++) {
@@ -37,16 +36,16 @@ const SpectrumWaves = () => {
                 const baseY = centerY + i * lineSpacing;
                 const distanceFromCenter = Math.abs(i) / (numLines / 2);
 
-                // Calculate convergence - lines meet at center point
+                // Calculate convergence - lines meet at center point (exact from reference)
                 const convergenceStrength = 100 * (1 - distanceFromCenter * 0.3);
 
                 for (let x = 0; x <= canvas.width; x += 2) {
                     const relativeX = (x - centerX) / (canvas.width / 2);
 
-                    // Smooth Gaussian curve for symmetrical convergence
+                    // Smooth Gaussian curve for symmetrical convergence (exact from reference)
                     const gaussianCurve = Math.exp(-relativeX * relativeX * 2);
 
-                    // Soft flowing wave motion
+                    // Soft flowing wave motion (exact from reference)
                     const wavePhase = time * 0.5 + i * 0.05;
                     const flowingWave = Math.sin(relativeX * 3 + wavePhase) * 8 * (1 - gaussianCurve * 0.5);
 
@@ -72,13 +71,13 @@ const SpectrumWaves = () => {
                     }
                 }
 
-                // Thin, semi-transparent lines - more visible near center
+                // Thin, semi-transparent lines - more visible near center (exact from reference)
                 const baseOpacity = 0.04;
                 const centerBonus = (1 - distanceFromCenter) * 0.08;
                 const opacity = baseOpacity + centerBonus;
 
                 ctx.strokeStyle = `rgba(180, 180, 180, ${opacity})`;
-                ctx.lineWidth = 0.8;
+                ctx.lineWidth = 0.8; // Exact from reference
                 ctx.stroke();
             }
         };
@@ -97,7 +96,12 @@ const SpectrumWaves = () => {
         };
     }, []);
 
-    return <canvas ref={canvasRef} className="spectrum-waves" />;
+    return (
+        <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        />
+    );
 };
 
 export default SpectrumWaves;
