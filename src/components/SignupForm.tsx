@@ -4,8 +4,8 @@ const SignupForm = () => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
-        password: '',
-        businessType: ''
+        location: '',
+        businessName: ''
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -17,179 +17,112 @@ const SignupForm = () => {
         console.log('Form submitted:', formData);
     };
 
-    const businessTypes = [
-        { value: '', label: 'Select your business type' },
-        { value: 'gym', label: 'Gym / Fitness Center' },
-        { value: 'yoga', label: 'Yoga Studio' },
-        { value: 'crossfit', label: 'CrossFit Box' },
-        { value: 'personal', label: 'Personal Trainer' },
-        { value: 'other', label: 'Other' }
-    ];
+
 
     return (
-        <section className="py-20 px-4 bg-matt-black relative z-10">
-            <div className="max-w-md mx-auto">
-                {/* Signup Card */}
-                <div className="bg-gradient-to-b from-matt-elevated to-matt-dark border border-white/5 rounded-2xl p-8 shadow-2xl">
-                    {/* Header */}
-                    <div className="text-center mb-8">
-                        <span className="inline-block px-3 py-1 text-xs font-medium tracking-wide uppercase text-white/60 bg-white/5 rounded-full mb-4">
-                            Start Free Trial
+        <section id="contact" className="py-20 px-4 bg-[#07080C] relative overflow-hidden">
+            {/* Background gradient - same as Hero for consistency */}
+            <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    background: `
+                        radial-gradient(ellipse 28% 18% at 70% 55%, rgba(120,150,190,0.06) 0%, transparent 65%),
+                        radial-gradient(ellipse 40% 30% at 70% 55%, rgba(100, 130, 170, 0.04) 0%, transparent 70%),
+                        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(30, 40, 55, 0.03) 0%, transparent 100%)
+                    `
+                }}
+            />
+
+            <div className="max-w-4xl mx-auto relative z-10">
+                {/* CTA Divider */}
+                <div className="text-center mb-24 px-6">
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
+                        Ready to transform your <br className="hidden md:block" />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                            clientele gym experience?
                         </span>
-                        <h2 className="text-display text-2xl md:text-3xl mb-3 text-white">
-                            Transform Your <span className="text-white/80">Fitness Business</span>
-                        </h2>
-                        <p className="text-sm text-white/50">
-                            Join thousands of coaches delivering premium experiences
-                        </p>
-                    </div>
-
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label htmlFor="fullName" className="block text-xs font-medium text-white/60 mb-2">
-                                Full Name
-                            </label>
-                            <input
-                                type="text"
-                                id="fullName"
-                                className="input"
-                                placeholder="Enter your full name"
-                                value={formData.fullName}
-                                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-2">
-                                Email Address
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                className="input"
-                                placeholder="you@yourbusiness.com"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="password" className="block text-xs font-medium text-white/60 mb-2">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                className="input"
-                                placeholder="Create a secure password"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                required
-                                minLength={8}
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="businessType" className="block text-xs font-medium text-white/60 mb-2">
-                                Business Type
-                            </label>
-                            <select
-                                id="businessType"
-                                className="input appearance-none cursor-pointer"
-                                value={formData.businessType}
-                                onChange={(e) => setFormData({ ...formData, businessType: e.target.value })}
-                                required
-                            >
-                                {businessTypes.map((type) => (
-                                    <option key={type.value} value={type.value} className="bg-matt-dark">
-                                        {type.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full py-4 px-6 bg-white text-matt-black font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <div className="w-5 h-5 border-2 border-matt-black/20 border-t-matt-black rounded-full animate-spin" />
-                            ) : (
-                                <>
-                                    Get Started Free
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M5 12h14M12 5l7 7-7 7" />
-                                    </svg>
-                                </>
-                            )}
-                        </button>
-                    </form>
-
-                    {/* Divider */}
-                    <div className="flex items-center gap-4 my-6">
-                        <div className="flex-1 h-px bg-white/10" />
-                        <span className="text-xs text-white/40">or continue with</span>
-                        <div className="flex-1 h-px bg-white/10" />
-                    </div>
-
-                    {/* Social Buttons */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <button type="button" className="flex items-center justify-center gap-2 py-3 px-4 bg-matt-dark border border-white/5 rounded-lg text-sm text-white/70 transition-all hover:bg-matt-elevated hover:border-white/10">
-                            <svg width="20" height="20" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                                <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                            </svg>
-                            Google
-                        </button>
-                        <button type="button" className="flex items-center justify-center gap-2 py-3 px-4 bg-matt-dark border border-white/5 rounded-lg text-sm text-white/70 transition-all hover:bg-matt-elevated hover:border-white/10">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
-                            </svg>
-                            GitHub
-                        </button>
-                    </div>
-
-                    {/* Terms */}
-                    <p className="text-xs text-center text-white/40 mt-6">
-                        By signing up, you agree to our{' '}
-                        <a href="#terms" className="text-white/60 hover:text-white underline">Terms of Service</a> and{' '}
-                        <a href="#privacy" className="text-white/60 hover:text-white underline">Privacy Policy</a>
+                    </h2>
+                    <p className="mt-6 text-lg text-white/50 max-w-2xl mx-auto">
+                        Create high-quality fitness experiences and manage your business in a quick and engaging way.
                     </p>
                 </div>
 
-                {/* Trust Indicators */}
-                <div className="flex items-center justify-center gap-6 mt-8 flex-wrap">
-                    <div className="flex items-center gap-2 text-xs text-white/50">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/40">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            <path d="M9 12l2 2 4-4" />
-                        </svg>
-                        <span>Bank-level Security</span>
+                <div className="grid lg:grid-cols-2 items-start gap-12 p-8 bg-[#0B0B0F] border border-white/10 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.5)]">
+                    <div>
+                        <h2 className="text-white text-3xl font-bold">Let's Connect</h2>
+                        <p className="text-[15px] text-white/60 mt-4 leading-relaxed">
+                            If you are looking forward to premiumize your gym we will help you end to end to achieve this ultimate goal. Place an inquiry and our sales team will reach you out with an update.
+                        </p>
+                        <div className="mt-12">
+                            <h2 className="text-white text-base font-semibold">Email</h2>
+                            <ul className="mt-4">
+                                <li className="flex items-center">
+                                    <div className="bg-white/10 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" className="text-white" viewBox="0 0 479.058 479.058">
+                                            <path d="M434.146 59.882H44.912C20.146 59.882 0 80.028 0 104.794v269.47c0 24.766 20.146 44.912 44.912 44.912h389.234c24.766 0 44.912-20.146 44.912-44.912v-269.47c0-24.766-20.146-44.912-44.912-44.912zm0 29.941c2.034 0 3.969.422 5.738 1.159L239.529 264.631 39.173 90.982a14.902 14.902 0 0 1 5.738-1.159zm0 299.411H44.912c-8.26 0-14.971-6.71-14.971-14.971V122.615l199.778 173.141c2.822 2.441 6.316 3.655 9.81 3.655s6.988-1.213 9.81-3.655l199.778-173.141v251.649c-.001 8.26-6.711 14.97-14.971 14.97z" />
+                                        </svg>
+                                    </div>
+                                    <a href="mailto:info@coachos.com" className="text-sm ml-4 hover:opacity-80 transition-opacity">
+                                        <small className="block text-white">Mail</small>
+                                        <span className="text-blue-500 font-medium">info@coachos.com</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-white/50">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/40">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
-                        </svg>
-                        <span>14-day Free Trial</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-white/50">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/40">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                        <span>2,500+ Coaches</span>
-                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <input
+                            type='text'
+                            placeholder='Name'
+                            className="w-full text-white bg-white/5 rounded-md py-2.5 px-4 border border-white/10 text-sm outline-0 focus:border-blue-500 focus:bg-white/10 transition-colors"
+                            value={formData.fullName}
+                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                            required
+                        />
+                        <input
+                            type='email'
+                            placeholder='Email'
+                            className="w-full text-white bg-white/5 rounded-md py-2.5 px-4 border border-white/10 text-sm outline-0 focus:border-blue-500 focus:bg-white/10 transition-colors"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                        />
+                        <input
+                            type='text'
+                            placeholder='Location'
+                            className="w-full text-white bg-white/5 rounded-md py-2.5 px-4 border border-white/10 text-sm outline-0 focus:border-blue-500 focus:bg-white/10 transition-colors"
+                            value={formData.location}
+                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        />
+                        <input
+                            type='text'
+                            placeholder='Business / Gym Name'
+                            className="w-full text-white bg-white/5 rounded-md py-2.5 px-4 border border-white/10 text-sm outline-0 focus:border-blue-500 focus:bg-white/10 transition-colors"
+                            value={formData.businessName}
+                            onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                        />
+                        <button
+                            type='submit'
+                            className="text-white bg-blue-600 hover:bg-blue-700 rounded-md text-sm font-medium px-4 py-2.5 w-full cursor-pointer border-0 mt-2 transition-colors disabled:opacity-50"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Sending...' : 'Place Inquiry'}
+                        </button>
+                    </form>
                 </div>
             </div>
+
+            {/* Back to Top hint */}
+            <a
+                href="#home"
+                className="absolute bottom-6 right-8 flex items-center gap-2 text-xs text-white/20 hover:text-white/50 transition-colors z-40 hidden md:flex"
+            >
+                Back to Top
+                <svg className="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
         </section>
     );
 };

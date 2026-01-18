@@ -1,6 +1,6 @@
-import { Suspense, useRef, useState, useEffect, Component, ReactNode } from 'react';
+import { Suspense, useRef, useState, useEffect, Component, type ReactNode } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, OrbitControls, Environment } from '@react-three/drei';
+import { useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface Laptop3DProps {
@@ -35,20 +35,21 @@ class WebGLErrorBoundary extends Component<{ children: ReactNode, fallback: Reac
     }
 }
 
-// Main exported component
+// Main exported component - OPTIMIZED for performance
 const Laptop3D = ({ size = 1, className = '' }: Laptop3DProps) => {
     return (
         <div className={`w-full h-full ${className}`}>
             <WebGLErrorBoundary fallback={<LaptopPlaceholder />}>
                 <Canvas
                     camera={{ position: [0, 0, 4], fov: 45 }}
-                    dpr={[1, 1.5]}
+                    dpr={1} // Fixed low DPR for better performance
                     gl={{
-                        antialias: true,
+                        antialias: false, // Disable for performance
                         alpha: true,
                         powerPreference: 'high-performance',
                         failIfMajorPerformanceCaveat: false
                     }}
+                    frameloop="demand" // Only render when needed
                     style={{ background: 'transparent' }}
                     onCreated={({ gl }) => {
                         gl.setClearColor(0x000000, 0);
@@ -72,14 +73,17 @@ const LaptopPlaceholder = () => (
     </div>
 );
 
-// Inner scene with laptop model
+// Inner scene with laptop model - OPTIMIZED
 const LaptopScene = ({ size }: { size: number }) => {
     const groupRef = useRef<THREE.Group>(null);
     const [isInteracting, setIsInteracting] = useState(false);
 
-    // Idle animation
+    // Idle animation - throttled to every 2nd frame for performance
     useFrame((state) => {
         if (!groupRef.current || isInteracting) return;
+
+        // Throttle animation to every 2nd frame (~30fps instead of 60fps)
+        if (Math.floor(state.clock.elapsedTime * 60) % 2 !== 0) return;
 
         const time = state.clock.getElapsedTime();
 
@@ -89,18 +93,18 @@ const LaptopScene = ({ size }: { size: number }) => {
         // Tiny rotation drift
         groupRef.current.rotation.x = Math.sin(time * 0.3) * 0.008;
         groupRef.current.rotation.y = Math.sin(time * 0.4) * 0.01 + Math.PI;
+
+        // Invalidate to request re-render (with demand frameloop)
+        state.invalidate();
     });
 
     return (
         <>
-            {/* Lighting */}
-            <ambientLight intensity={0.3} />
-            <directionalLight position={[5, 5, 5]} intensity={0.8} color="#c0d0ff" />
-            <directionalLight position={[-5, 3, -5]} intensity={0.4} color="#8090c0" />
-            <spotLight position={[0, 10, 0]} intensity={0.5} angle={0.3} penumbra={1} />
+            {/* Lighting - REDUCED for performance */}
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[5, 5, 5]} intensity={0.9} color="#c0d0ff" />
 
-            {/* Environment for reflections */}
-            <Environment preset="city" />
+            {/* Environment removed for performance - using simple lighting instead */}
 
             {/* Laptop model */}
             <group ref={groupRef} scale={size * 1.8}>

@@ -29,7 +29,7 @@ const Navbar = () => {
       >
         {/* LEFT: Nav Links */}
         <div className="hidden sm:flex items-center gap-6 min-w-[120px]">
-          {['Features', 'Pricing'].map((label) => (
+          {['Features', 'Pricing', 'About'].map((label) => (
             <a
               key={label}
               href={`#${label.toLowerCase()}`}
@@ -42,7 +42,7 @@ const Navbar = () => {
 
         {/* CENTER: Brand Anchor */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <a href="/" className="group flex items-center justify-center whitespace-nowrap">
+          <a href="#home" className="group flex items-center justify-center whitespace-nowrap">
             <span className="text-lg sm:text-xl font-bold tracking-wide text-white transition-all duration-300 [text-shadow:0_0_20px_rgba(160,200,255,0.25)] group-hover:[text-shadow:0_0_25px_rgba(160,200,255,0.5)]">
               Coach OS
             </span>
@@ -51,13 +51,19 @@ const Navbar = () => {
 
         {/* RIGHT: CTAs */}
         <div className="flex items-center justify-end gap-2 sm:gap-3 min-w-[120px]">
-          <button className="hidden md:block px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors duration-200">
+          <a
+            href="#contact"
+            className="hidden md:block px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors duration-200"
+          >
             Contact
-          </button>
+          </a>
 
-          <button className="hidden sm:block bg-white text-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 hover:bg-white/90">
+          <a
+            href="#contact"
+            className="hidden sm:block bg-white text-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 hover:bg-white/90"
+          >
             Get Started
-          </button>
+          </a>
 
           {/* Mobile Toggle */}
           <button
@@ -87,19 +93,23 @@ const Navbar = () => {
       >
         {isMobileMenuOpen && (
           <>
-            {['Features', 'Pricing', 'Contact'].map((label) => (
+            {[{ label: 'Features', href: '#features' }, { label: 'Pricing', href: '#pricing' }, { label: 'About', href: '#about' }, { label: 'Contact', href: '#contact' }].map((item) => (
               <a
-                key={label}
-                href="#"
+                key={item.label}
+                href={item.href}
                 className="text-white/80 hover:text-white text-base font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {label}
+                {item.label}
               </a>
             ))}
-            <button className="w-full bg-white text-black px-6 py-3 rounded-full text-base font-semibold">
+            <a
+              href="#contact"
+              className="w-full bg-white text-black px-6 py-3 rounded-full text-base font-semibold text-center"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               Get Started
-            </button>
+            </a>
           </>
         )}
       </div>

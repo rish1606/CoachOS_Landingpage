@@ -1,5 +1,5 @@
 import { useRef, useMemo, lazy, Suspense } from 'react';
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, MotionValue, AnimatePresence } from 'framer-motion';
 
 // Lazy load 3D laptop to avoid SSR issues
 const Laptop3D = lazy(() => import('./Laptop3D'));
@@ -25,6 +25,7 @@ const UsesSection = () => {
 
     return (
         <section
+            id="features"
             ref={sectionRef}
             className="relative bg-[#07080C]"
             style={{ height: '400vh' }}
@@ -32,9 +33,21 @@ const UsesSection = () => {
             {/* Sticky container */}
             <div className="sticky top-0 h-screen flex items-center justify-center" style={{ overflow: 'clip' }}>
 
-                {/* Film grain overlay */}
+                {/* Background gradient - same as Hero */}
                 <div
-                    className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
+                    className="absolute inset-0 pointer-events-none z-0"
+                    style={{
+                        background: `
+                            radial-gradient(ellipse 28% 18% at 70% 55%, rgba(120,150,190,0.06) 0%, transparent 65%),
+                            radial-gradient(ellipse 40% 30% at 70% 55%, rgba(100, 130, 170, 0.04) 0%, transparent 70%),
+                            radial-gradient(ellipse 80% 60% at 50% 50%, rgba(30, 40, 55, 0.03) 0%, transparent 100%)
+                        `
+                    }}
+                />
+
+                {/* Film grain overlay - very subtle */}
+                <div
+                    className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none z-50"
                     style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
                         backgroundRepeat: 'repeat',
@@ -52,6 +65,21 @@ const UsesSection = () => {
                 <PanelA opacity={panelAOpacity} />
                 <PanelB opacity={panelBOpacity} />
                 <PanelC opacity={panelCOpacity} />
+
+                {/* Next section hint */}
+                <AnimatePresence>
+                    <motion.a
+                        href="#orbit"
+                        className="absolute bottom-8 right-10 flex items-center gap-2 text-xs text-white/28 hover:text-white/55 transition-colors z-50"
+                        style={{ opacity: panelCOpacity }} // Fade in with the last panel
+                        whileHover={{ scale: 1.05 }}
+                    >
+                        Next: Coach OS Core
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </motion.a>
+                </AnimatePresence>
             </div>
         </section>
     );
@@ -177,39 +205,49 @@ const PanelC = ({ opacity }: { opacity: MotionValue<number> }) => (
 );
 
 // Same wave style as Hero - smooth silver-blue, no jitter
+// OPTIMIZED: Uses useInView to pause animations when off-screen
 const WaveBackground = ({ intensity }: { intensity: MotionValue<number> }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isInView = useInView(containerRef, { margin: "-10%" });
+
     const viewBoxWidth = 1920;
     const viewBoxHeight = 1080;
     const centerY = viewBoxHeight * 0.5;
 
+    // Waves with visible color
     const waves = useMemo(() =>
-        Array.from({ length: 25 }).map((_, i) => {
-            const yOffset = centerY + (i - 12) * 15;
-            const distFromCenter = Math.abs(i - 12) / 12;
+        Array.from({ length: 15 }).map((_, i) => {
+            const yOffset = centerY + (i - 7) * 22;
+            const distFromCenter = Math.abs(i - 7) / 7;
             return {
                 key: i,
                 yOffset,
-                opacity: 0.15 + (1 - distFromCenter) * 0.35,
-                strokeWidth: 0.6 + (1 - distFromCenter) * 0.8,
-                duration: 10 + i * 0.3,
-                delay: i * 0.08
+                opacity: 0.15 + (1 - distFromCenter) * 0.28, // More visible
+                strokeWidth: 0.6 + (1 - distFromCenter) * 0.7,
+                duration: 12 + i * 0.4,
+                delay: i * 0.1
             };
         }), [centerY]
     );
 
     return (
         <motion.div
+            ref={containerRef}
             className="absolute inset-0 z-0"
-            style={{ opacity: intensity }}
+            style={{
+                opacity: intensity,
+                willChange: 'opacity'
+            }}
         >
             <svg viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`} preserveAspectRatio="xMidYMid slice" className="w-full h-full">
                 <defs>
+                    {/* Brighter blue wave gradient - slightly enhanced */}
                     <linearGradient id="usesWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgba(100,160,255,0)" />
-                        <stop offset="30%" stopColor="rgba(100,160,255,0.25)" />
-                        <stop offset="50%" stopColor="rgba(160,200,255,0.4)" />
-                        <stop offset="70%" stopColor="rgba(100,160,255,0.25)" />
-                        <stop offset="100%" stopColor="rgba(100,160,255,0)" />
+                        <stop offset="0%" stopColor="rgba(100,160,240,0)" />
+                        <stop offset="25%" stopColor="rgba(120,180,240,0.28)" />
+                        <stop offset="50%" stopColor="rgba(160,210,255,0.48)" />
+                        <stop offset="75%" stopColor="rgba(120,180,240,0.28)" />
+                        <stop offset="100%" stopColor="rgba(100,160,240,0)" />
                     </linearGradient>
                 </defs>
 
@@ -221,13 +259,13 @@ const WaveBackground = ({ intensity }: { intensity: MotionValue<number> }) => {
                         strokeWidth={w.strokeWidth}
                         opacity={w.opacity}
                         d={`M0 ${w.yOffset} Q${viewBoxWidth * 0.25} ${w.yOffset + 15} ${viewBoxWidth * 0.5} ${w.yOffset} T${viewBoxWidth} ${w.yOffset}`}
-                        animate={{
+                        animate={isInView ? {
                             d: [
                                 `M0 ${w.yOffset} Q${viewBoxWidth * 0.25} ${w.yOffset + 18} ${viewBoxWidth * 0.5} ${w.yOffset} T${viewBoxWidth} ${w.yOffset}`,
                                 `M0 ${w.yOffset} Q${viewBoxWidth * 0.25} ${w.yOffset - 18} ${viewBoxWidth * 0.5} ${w.yOffset} T${viewBoxWidth} ${w.yOffset}`,
                                 `M0 ${w.yOffset} Q${viewBoxWidth * 0.25} ${w.yOffset + 18} ${viewBoxWidth * 0.5} ${w.yOffset} T${viewBoxWidth} ${w.yOffset}`,
                             ]
-                        }}
+                        } : undefined}
                         transition={{
                             duration: w.duration,
                             repeat: Infinity,

@@ -1,7 +1,9 @@
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import UsesSection from './components/UsesSection';
-import FooterCTA from './components/FooterCTA';
+import AboutSection from './components/AboutSection';
+import OrbitCoreSection from './components/OrbitCoreSection';
+import PricingSection from './components/PricingSection';
 import SignupForm from './components/SignupForm';
 
 function App() {
@@ -11,7 +13,9 @@ function App() {
       <main>
         <Hero />
         <UsesSection />
-        <FooterCTA />
+        <OrbitCoreSection />
+        <PricingSection />
+        <AboutSection />
         <SignupForm />
       </main>
     </div>

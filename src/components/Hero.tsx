@@ -3,14 +3,15 @@ import SpectrumWaves from './SpectrumWaves';
 
 const Hero = () => {
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden bg-[#07080C]">
+        <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-[#07080C]">
             {/* BACK LAYER: Faint blue cast + soft radial glow at core zone (70% width) */}
             <div
                 className="absolute inset-0 pointer-events-none z-0"
                 style={{
                     background: `
-                        radial-gradient(ellipse 40% 30% at 70% 55%, rgba(100, 130, 170, 0.06) 0%, transparent 70%),
-                        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(30, 40, 55, 0.04) 0%, transparent 100%)
+                        radial-gradient(ellipse 28% 18% at 70% 55%, rgba(120,150,190,0.06) 0%, transparent 65%),
+                        radial-gradient(ellipse 40% 30% at 70% 55%, rgba(100, 130, 170, 0.04) 0%, transparent 70%),
+                        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(30, 40, 55, 0.03) 0%, transparent 100%)
                     `
                 }}
             />
@@ -96,6 +97,20 @@ const Hero = () => {
                     </motion.div>
                 </div>
             </div>
+
+            {/* Next section hint */}
+            <motion.a
+                href="#features"
+                className="absolute bottom-8 right-10 flex items-center gap-2 text-xs text-white/28 hover:text-white/55 transition-colors z-40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 2.0 }}
+            >
+                Next: Features
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </motion.a>
         </section>
     );
 };

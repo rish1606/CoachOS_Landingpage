@@ -21,7 +21,7 @@ const FooterCTA = () => {
     );
 
     return (
-        <section className="relative py-32 bg-[#07080C] overflow-hidden">
+        <section id="pricing" className="relative py-32 bg-[#07080C] overflow-hidden">
             {/* Subtle wave background */}
             <div className="absolute inset-0 opacity-20">
                 <svg
