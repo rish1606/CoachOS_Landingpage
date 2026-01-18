@@ -119,9 +119,8 @@ const OrbitCoreSection = () => {
                                         x,
                                         y,
                                     }}
-                                    whileHover={{ y: -6, scale: 1.02 }}
                                 >
-                                    <div className="p-4 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 shadow-lg">
+                                    <div className="p-4 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 transition-all duration-300 shadow-lg">
                                         <h4 className="text-[9px] uppercase font-bold text-blue-200/80 mb-2 tracking-wider">
                                             {card.title}
                                         </h4>
