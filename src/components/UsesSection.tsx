@@ -1,5 +1,5 @@
 import { useRef, useMemo, lazy, Suspense } from 'react';
-import { motion, useScroll, useTransform, useInView, MotionValue, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, MotionValue, AnimatePresence } from 'motion/react';
 
 // Lazy load 3D laptop to avoid SSR issues
 const Laptop3D = lazy(() => import('./Laptop3D'));
@@ -9,7 +9,7 @@ const UsesSection = () => {
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
-        offset: ["start end", "end start"]
+        offset: ["start 80%", "end start"]  // OPTIMIZED: Start when section is 20% visible
     });
 
     // Laptop position: 12% → 50% → 88%
@@ -86,12 +86,16 @@ const UsesSection = () => {
 };
 
 // Laptop container with scroll-linked horizontal movement
+// OPTIMIZED: Only load 3D content when visible
 const LaptopContainer = ({ laptopPercent }: { laptopPercent: MotionValue<number> }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isVisible = useInView(containerRef, { margin: "-5%" });
     const leftStyle = useTransform(laptopPercent, (v) => `${v}%`);
     const translateX = useTransform(laptopPercent, (v) => `${-v}%`);
 
     return (
         <motion.div
+            ref={containerRef}
             className="absolute z-10"
             style={{
                 left: leftStyle,
@@ -105,15 +109,21 @@ const LaptopContainer = ({ laptopPercent }: { laptopPercent: MotionValue<number>
             {/* Occlusion mask - dims waves around laptop */}
             <div className="absolute -inset-24 bg-[radial-gradient(ellipse_at_center,rgba(7,8,12,0.95)_0%,rgba(7,8,12,0.6)_40%,transparent_65%)] pointer-events-none z-0" />
 
-            {/* 3D Laptop */}
+            {/* 3D Laptop - only render when visible */}
             <div className="relative w-full h-full z-10">
-                <Suspense fallback={
+                {isVisible ? (
+                    <Suspense fallback={
+                        <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-16 h-16 border-2 border-white/10 border-t-white/40 rounded-full animate-spin" />
+                        </div>
+                    }>
+                        <Laptop3D size={1.3} />
+                    </Suspense>
+                ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-16 h-16 border-2 border-white/10 border-t-white/40 rounded-full animate-spin" />
+                        <div className="w-64 h-44 bg-gradient-to-b from-gray-800/20 to-gray-900/20 rounded-lg" />
                     </div>
-                }>
-                    <Laptop3D size={1.3} />
-                </Suspense>
+                )}
             </div>
         </motion.div>
     );
@@ -208,7 +218,7 @@ const PanelC = ({ opacity }: { opacity: MotionValue<number> }) => (
 // OPTIMIZED: Uses useInView to pause animations when off-screen
 const WaveBackground = ({ intensity }: { intensity: MotionValue<number> }) => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const isInView = useInView(containerRef, { margin: "-10%" });
+    const isInView = useInView(containerRef, { margin: "-30%" });  // OPTIMIZED: Wait until 30% visible
 
     const viewBoxWidth = 1920;
     const viewBoxHeight = 1080;

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 
 const OrbitCoreSection = () => {
     const sectionRef = useRef<HTMLDivElement>(null);

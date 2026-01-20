@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValueEvent, useInView, AnimatePresence } from 'motion/react';
 
 // Story steps content (4 steps)
 const storySteps = [
