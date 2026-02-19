@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 const FooterCTA = () => {
     const viewBoxWidth = 1920;

@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
-import { motion, useInView, useTransform, useMotionValue, animate } from 'framer-motion';
-import { GoogleGeminiEffect } from './ui/google-gemini-effect';
+import { useRef, useState } from 'react';
+import { motion, useInView } from 'motion/react';
 
 // Pricing tiers data
 const pricingTiers = [
@@ -171,24 +170,6 @@ const PricingSection = () => {
     const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-    // Automated Gemini Effect Animation (Continuous Loop)
-    const progress = useMotionValue(0);
-
-    useEffect(() => {
-        // Animate progress 0 -> 1 once, slow and steady
-        const controls = animate(progress, 1, {
-            duration: 10,
-            ease: "easeInOut",
-        });
-        return () => controls.stop();
-    }, [progress]);
-
-    const pathLengthFirst = useTransform(progress, [0, 1], [0.1, 1.2]);
-    const pathLengthSecond = useTransform(progress, [0, 1], [0.1, 1.2]);
-    const pathLengthThird = useTransform(progress, [0, 1], [0.1, 1.2]);
-    const pathLengthFourth = useTransform(progress, [0, 1], [0.05, 1.2]);
-    const pathLengthFifth = useTransform(progress, [0, 1], [0, 1.2]);
-
     return (
         <section
             id="pricing"
@@ -221,19 +202,7 @@ const PricingSection = () => {
                 }}
             />
 
-            {/* Google Gemini Effect Background - Connects the cards */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[600px] z-0 pointer-events-none overflow-visible opacity-50 mix-blend-screen">
-                <GoogleGeminiEffect
-                    pathLengths={[
-                        pathLengthFirst,
-                        pathLengthSecond,
-                        pathLengthThird,
-                        pathLengthFourth,
-                        pathLengthFifth,
-                    ]}
-                    className="top-[-100px] scale-100" // Vertically aligned to center of cards
-                />
-            </div>
+
 
             <div className="relative z-10 max-w-6xl mx-auto px-6">
                 {/* Section header */}
