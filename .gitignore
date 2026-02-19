@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Unwanted files
+*.zip
+*.txt
+819e294b-e2d3-47b8-aaf9-5bfb16ae21fe
