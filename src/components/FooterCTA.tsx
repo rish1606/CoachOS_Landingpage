@@ -75,7 +75,7 @@ const FooterCTA = () => {
                 </motion.h2>
 
                 <motion.p
-                    className="text-lg text-white/50 mb-10"
+                    className="text-lg text-[#94A3B8] mb-10"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

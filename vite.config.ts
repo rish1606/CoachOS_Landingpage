@@ -13,5 +13,17 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     allowedHosts: true,
-  }
+  },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+          'animation-vendor': ['framer-motion', 'motion'],
+        },
+      },
+    },
+  },
 })

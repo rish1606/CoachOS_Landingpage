@@ -29,7 +29,7 @@ const Navbar = () => {
       >
         {/* LEFT: Nav Links */}
         <div className="hidden sm:flex items-center gap-6 min-w-[120px]">
-          {['Features', 'Pricing', 'About'].map((label) => (
+          {['Use', 'Features', 'Pricing'].map((label) => (
             <a
               key={label}
               href={`#${label.toLowerCase()}`}
@@ -49,17 +49,16 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* RIGHT: CTAs */}
-        <div className="flex items-center justify-end gap-2 sm:gap-3 min-w-[120px]">
+        {/* RIGHT: About + CTA */}
+        <div className="flex items-center justify-end gap-4 sm:gap-5 min-w-[120px]">
           <a
-            href="#contact"
-            className="hidden md:block px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors duration-200"
+            href="#about"
+            className="hidden sm:block text-sm font-medium text-white/60 hover:text-white transition-colors duration-200"
           >
-            Contact
+            About
           </a>
-
           <a
-            href="#contact"
+            href="#pricing"
             className="hidden sm:block bg-white text-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 hover:bg-white/90"
           >
             Get Started
@@ -93,7 +92,12 @@ const Navbar = () => {
       >
         {isMobileMenuOpen && (
           <>
-            {[{ label: 'Features', href: '#features' }, { label: 'Pricing', href: '#pricing' }, { label: 'About', href: '#about' }, { label: 'Contact', href: '#contact' }].map((item) => (
+            {[
+              { label: 'Use', href: '#use' },
+              { label: 'Features', href: '#features' },
+              { label: 'Pricing', href: '#pricing' },
+              { label: 'About', href: '#about' },
+            ].map((item) => (
               <a
                 key={item.label}
                 href={item.href}
@@ -104,7 +108,7 @@ const Navbar = () => {
               </a>
             ))}
             <a
-              href="#contact"
+              href="#pricing"
               className="w-full bg-white text-black px-6 py-3 rounded-full text-base font-semibold text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >

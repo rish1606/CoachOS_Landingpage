@@ -25,7 +25,7 @@ const UsesSection = () => {
 
     return (
         <section
-            id="features"
+            id="use"
             ref={sectionRef}
             className="relative bg-[#07080C]"
             style={{ height: '400vh' }}
@@ -45,15 +45,7 @@ const UsesSection = () => {
                     }}
                 />
 
-                {/* Film grain overlay - very subtle */}
-                <div
-                    className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none z-50"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: 'repeat',
-                        backgroundSize: '150px'
-                    }}
-                />
+                {/* Film grain overlay removed */}
 
                 {/* Background waves - same style as Hero */}
                 <WaveBackground intensity={waveIntensity} />
@@ -69,12 +61,12 @@ const UsesSection = () => {
                 {/* Next section hint */}
                 <AnimatePresence>
                     <motion.a
-                        href="#orbit"
+                        href="#features"
                         className="absolute bottom-8 right-10 flex items-center gap-2 text-xs text-white/28 hover:text-white/55 transition-colors z-50"
                         style={{ opacity: panelCOpacity }} // Fade in with the last panel
                         whileHover={{ scale: 1.05 }}
                     >
-                        Next: Coach OS Core
+                        Next: Features
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
@@ -128,7 +120,7 @@ const PanelA = ({ opacity }: { opacity: MotionValue<number> }) => (
         <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
             <div className="ml-auto max-w-[400px] text-right">
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">What it is</h2>
-                <p className="text-sm md:text-base text-white/55 mb-5 leading-relaxed">
+                <p className="text-sm md:text-base text-[#94A3B8] mb-5 leading-relaxed">
                     An intelligent platform that unifies your entire coaching business.
                 </p>
                 <ul className="space-y-2.5 text-white/45 text-sm">
@@ -160,7 +152,7 @@ const PanelB = ({ opacity }: { opacity: MotionValue<number> }) => (
             <div className="flex justify-between items-center">
                 <div className="max-w-[220px]">
                     <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3">What it helps</h2>
-                    <p className="text-white/45 text-sm leading-relaxed">
+                    <p className="text-[#94A3B8] text-sm leading-relaxed">
                         Transform how you run your coaching practice.
                     </p>
                 </div>
@@ -183,7 +175,7 @@ const PanelC = ({ opacity }: { opacity: MotionValue<number> }) => (
         <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
             <div className="max-w-[400px]">
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">How to use</h2>
-                <p className="text-sm md:text-base text-white/55 mb-5 leading-relaxed">Get started in three simple steps.</p>
+                <p className="text-sm md:text-base text-[#94A3B8] mb-5 leading-relaxed">Get started in three simple steps.</p>
                 <div className="space-y-3">
                     {[
                         { num: '1', title: 'Set up your profile', sub: 'Connect your calendar and preferences' },

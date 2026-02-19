@@ -241,7 +241,6 @@ const AboutSection = () => {
     const sectionRef = useRef<HTMLDivElement>(null);
     const headingRef = useRef<HTMLDivElement>(null);
     const [currentStep, setCurrentStep] = useState(0);
-    const [progress, setProgress] = useState(0);
     const [showBox, setShowBox] = useState(false);
 
     // Detect when heading comes into view (for fade-in animation)
@@ -254,8 +253,6 @@ const AboutSection = () => {
     });
 
     useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        setProgress(latest);
-
         // Show box after heading is in view AND scroll started
         if (latest > 0.04 && isHeadingInView && !showBox) {
             setShowBox(true);
@@ -310,19 +307,19 @@ const AboutSection = () => {
                     }}
                 >
                     {/* Pill label - SLOWER fade in for attention */}
-                    <motion.span
-                        className="inline-block px-3 py-1.5 text-[10px] font-semibold tracking-widest uppercase text-white/40 bg-white/[0.03] border border-white/[0.05] rounded-full"
+                    <motion.p
+                        className="text-blue-400 text-sm tracking-widest uppercase font-medium"
                         style={{ marginBottom: '14px' }}
                         initial={{ opacity: 0, y: 30 }}
                         animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 1.0, ease: "easeOut", delay: 0.1 }}
                     >
                         About Coach OS
-                    </motion.span>
+                    </motion.p>
 
                     {/* Heading - SLOWER fade in for maximum attention */}
                     <motion.h2
-                        className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-white leading-[1.05]"
+                        className="text-3xl md:text-5xl font-bold text-white leading-[1.05]"
                         style={{ marginBottom: '16px' }}
                         initial={{ opacity: 0, y: 40 }}
                         animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
@@ -427,26 +424,8 @@ const AboutSection = () => {
                     />
                 </motion.div>
 
-                {/* Next section hint */}
-                <AnimatePresence>
-                    {progress > 0.92 && (
-                        <motion.a
-                            href="#contact"
-                            className="absolute bottom-8 right-10 flex items-center gap-2 text-xs text-white/28 hover:text-white/55 transition-colors z-40"
-                            initial={{ opacity: 0, x: 15 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            Next: Contact
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </motion.a>
-                    )}
-                </AnimatePresence>
             </div>
-        </section>
+        </section >
     );
 };
 
