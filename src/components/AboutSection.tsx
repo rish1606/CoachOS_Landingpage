@@ -13,7 +13,7 @@ const storySteps = [
     {
         id: 2,
         label: "Our Motto",
-        message: "Make gym operations feel calm, precise, and automated—so owners can focus on growth.",
+        message: "Make fitness operations feel calm, precise, and automated—so owners can focus on growth.",
         highlight: "focus on growth",
         boxPosition: 'bottom' as const,
     },
@@ -27,7 +27,7 @@ const storySteps = [
     {
         id: 4,
         label: "Our Mission",
-        message: "To become the backbone of every gym—so owners can breathe, grow, and lead with confidence.",
+        message: "To become the backbone of every fitness business—so owners can breathe, grow, and lead with confidence.",
         highlight: "breathe, grow, and lead",
         boxPosition: 'bottom' as const,
     },
@@ -336,7 +336,7 @@ const AboutSection = () => {
                         animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 1.0, ease: "easeOut", delay: 0.6 }}
                     >
-                        Coach OS helps gym owners run operations, retain clients, and grow revenue—without chaos.
+                        Coach OS helps facility owners run operations, retain clients, and grow revenue—without chaos.
                     </motion.p>
 
                     {/* What we do - slower */}

@@ -131,7 +131,7 @@ const PanelA = ({ opacity }: { opacity: MotionValue<number> }) => (
             <div className="ml-auto max-w-[400px] text-right">
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">What it is</h2>
                 <p className="text-sm md:text-base text-[#94A3B8] mb-5 leading-relaxed">
-                    An intelligent platform that unifies your entire coaching business.
+                    An intelligent platform that unifies your fitness facility—from independent coaches to entire studio networks.
                 </p>
                 <ul className="space-y-2.5 text-white/45 text-sm">
                     <li className="flex items-center justify-end gap-2.5">
@@ -163,7 +163,7 @@ const PanelB = ({ opacity }: { opacity: MotionValue<number> }) => (
                 <div className="max-w-[220px]">
                     <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3">What it helps</h2>
                     <p className="text-[#94A3B8] text-sm leading-relaxed">
-                        Transform how you run your coaching practice.
+                        Transform how you run your fitness business.
                     </p>
                 </div>
                 <div className="max-w-[220px] text-right space-y-3">

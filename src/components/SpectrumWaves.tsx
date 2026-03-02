@@ -1,293 +1,177 @@
-import { useEffect, useRef, useCallback } from "react";
-
-// Gaussian function - creates smooth bell curve shape
-const gaussian = (x: number, mean: number, sigma: number): number => {
-    return Math.exp(-Math.pow(x - mean, 2) / (2 * sigma * sigma));
-};
-
-// Eased smoothstep for transitions
-const smoothstep = (edge0: number, edge1: number, x: number): number => {
-    const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
-    return t * t * (3 - 2 * t);
-};
-
-interface GaussianPulse {
-    position: number;
-    velocity: number;
-    sigma: number;
-    amplitude: number;
-}
-
-interface WaveLine {
-    baseY: number;
-    baseThickness: number;
-    speed: number;
-    opacity: number;
-    pulses: GaussianPulse[];
-    color: { r: number; g: number; b: number };
-    distanceFromCenter: number;
-}
+import { useEffect, useRef } from 'react';
 
 const SpectrumWaves = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const isVisibleRef = useRef(true);
-    const linesRef = useRef<WaveLine[]>([]);
-    const timeRef = useRef(0);
-    const rafIdRef = useRef<number>(0);
-    const lastTimeRef = useRef<number>(0);
-
-    // Initialize wave lines - elegant, uniform, subtle
-    const initializeLines = useCallback((): WaveLine[] => {
-        const lines: WaveLine[] = [];
-        const color = { r: 140, g: 165, b: 195 };
-        const totalLines = 18;
-
-        for (let i = 0; i < totalLines; i++) {
-            const t = i / (totalLines - 1);
-            const centered = t * 2 - 1;
-            const distanceFromCenter = Math.abs(centered);
-
-            const numPulses = 2;
-            const pulses: GaussianPulse[] = [];
-            for (let p = 0; p < numPulses; p++) {
-                pulses.push({
-                    position: Math.random() * 1.6 - 0.3,
-                    velocity: 0.015 + Math.random() * 0.025,
-                    sigma: 0.1 + Math.random() * 0.1,
-                    amplitude: 4 + Math.random() * 8,
-                });
-            }
-
-            const thicknessFalloff = gaussian(centered, 0, 0.4);
-            const centerThickness = 2.2 + Math.random() * 0.6;
-            const edgeThickness = 0.25 + Math.random() * 0.1;
-            const baseThickness = edgeThickness + (centerThickness - edgeThickness) * thicknessFalloff;
-            const opacity = 0.05 + thicknessFalloff * 0.18;
-
-            lines.push({
-                baseY: t,
-                baseThickness,
-                speed: 0.4 + Math.random() * 0.3,
-                opacity,
-                pulses,
-                color,
-                distanceFromCenter,
-            });
-        }
-
-        return lines;
-    }, []);
-
-    // Main animation function using native requestAnimationFrame
-    const animate = useCallback((timestamp: number) => {
-        // Skip if not visible
-        if (!isVisibleRef.current) {
-            rafIdRef.current = requestAnimationFrame(animate);
-            return;
-        }
-
-        const canvas = canvasRef.current;
-        if (!canvas) {
-            rafIdRef.current = requestAnimationFrame(animate);
-            return;
-        }
-
-        const ctx = canvas.getContext("2d", { alpha: true });
-        if (!ctx) {
-            rafIdRef.current = requestAnimationFrame(animate);
-            return;
-        }
-
-        // Calculate delta time
-        const delta = lastTimeRef.current ? timestamp - lastTimeRef.current : 16;
-        lastTimeRef.current = timestamp;
-
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const w = canvas.width / dpr;
-        const h = canvas.height / dpr;
-
-        const cappedDelta = Math.min(delta, 50);
-        timeRef.current += cappedDelta * 0.001;
-
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-        ctx.globalCompositeOperation = "source-over";
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-
-        const peakXRatio = 0.70;
-        const centerYRatio = 0.555;
-        const bandHeight = h * 0.12;
-
-        const lines = linesRef.current;
-        const sortedLines = [...lines].sort((a, b) => b.distanceFromCenter - a.distanceFromCenter);
-
-        for (const line of sortedLines) {
-            const centered = line.baseY * 2 - 1;
-            const baseY = centerYRatio * h + centered * (bandHeight * 0.5);
-
-            for (const pulse of line.pulses) {
-                pulse.position += pulse.velocity * line.speed * cappedDelta * 0.001;
-                if (pulse.position > 1.4) {
-                    pulse.position = -0.4;
-                    pulse.amplitude = 4 + Math.random() * 10;
-                    pulse.sigma = 0.1 + Math.random() * 0.1;
-                    pulse.velocity = 0.015 + Math.random() * 0.025;
-                }
-            }
-
-            const points: { x: number; y: number; thickness: number; alpha: number }[] = [];
-
-            for (let x = 0; x <= w; x += 2) {
-                const xNorm = x / w;
-
-                const leftFlatten = smoothstep(0.0, 0.35, xNorm);
-                const rightBoost = smoothstep(0.5, 0.85, xNorm) * 0.3 + 1;
-
-                let gaussianSum = 0;
-                let maxGaussian = 0;
-
-                for (const pulse of line.pulses) {
-                    const g = gaussian(xNorm, pulse.position, pulse.sigma);
-                    gaussianSum += g * pulse.amplitude;
-                    maxGaussian = Math.max(maxGaussian, g);
-                }
-
-                const waveFrequency = 4;
-                const waveAmplitude = 3 + (1 - line.distanceFromCenter) * 3;
-                const sineWave = Math.sin(xNorm * Math.PI * waveFrequency + timeRef.current * 1.2 + line.baseY * 10) * waveAmplitude;
-                const yOffset = (gaussianSum * 0.4 + sineWave * 0.6) * leftFlatten * rightBoost;
-
-                const thicknessFromGaussian = maxGaussian * 0.8;
-                const thickness = line.baseThickness * (1 + thicknessFromGaussian);
-
-                const fadeLeft = smoothstep(0.0, 0.2, xNorm);
-                const fadeRight = smoothstep(1.0, 0.9, xNorm);
-                const peakProximity = gaussian(xNorm, peakXRatio, 0.22);
-                const alpha = line.opacity * fadeLeft * fadeRight * (0.7 + peakProximity * 0.3 + maxGaussian * 0.2);
-
-                points.push({
-                    x,
-                    y: baseY + yOffset,
-                    thickness: Math.max(0.25, thickness),
-                    alpha: Math.min(0.35, alpha),
-                });
-            }
-
-            for (let i = 0; i < points.length - 1; i++) {
-                const p1 = points[i];
-                const p2 = points[i + 1];
-
-                ctx.beginPath();
-                ctx.moveTo(p1.x, p1.y);
-                ctx.lineTo(p2.x, p2.y);
-
-                const avgThickness = (p1.thickness + p2.thickness) / 2;
-                const avgAlpha = (p1.alpha + p2.alpha) / 2;
-
-                ctx.strokeStyle = `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, ${avgAlpha})`;
-                ctx.lineWidth = avgThickness;
-                ctx.stroke();
-            }
-        }
-
-        // Subtle central spine
-        ctx.beginPath();
-        for (let x = 0; x <= w; x += 4) {
-            const xNorm = x / w;
-            const leftFlatten = smoothstep(0.0, 0.3, xNorm);
-            const rightBoost = smoothstep(0.5, 0.85, xNorm) * 0.25 + 1;
-
-            const pulse1Pos = (timeRef.current * 0.04) % 1.6 - 0.3;
-            const pulse2Pos = ((timeRef.current * 0.03) + 0.5) % 1.6 - 0.3;
-            const g1 = gaussian(xNorm, pulse1Pos, 0.12) * 6;
-            const g2 = gaussian(xNorm, pulse2Pos, 0.1) * 5;
-
-            const spineWave = Math.sin(xNorm * Math.PI * 4.5 + timeRef.current * 1.4) * 4;
-            const y = centerYRatio * h + (spineWave + g1 + g2 * 0.5) * leftFlatten * rightBoost;
-
-            if (x === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-
-        const spineGrad = ctx.createLinearGradient(0, 0, w, 0);
-        spineGrad.addColorStop(0.0, "rgba(150, 175, 205, 0)");
-        spineGrad.addColorStop(0.25, "rgba(150, 175, 205, 0)");
-        spineGrad.addColorStop(0.45, "rgba(150, 175, 205, 0.18)");
-        spineGrad.addColorStop(peakXRatio, "rgba(165, 185, 215, 0.35)");
-        spineGrad.addColorStop(0.85, "rgba(150, 175, 205, 0.12)");
-        spineGrad.addColorStop(1.0, "rgba(150, 175, 205, 0.03)");
-
-        ctx.strokeStyle = spineGrad;
-        ctx.lineWidth = 1.8 + Math.sin(timeRef.current * 1.5) * 0.3;
-        ctx.stroke();
-
-        // Continue animation loop
-        rafIdRef.current = requestAnimationFrame(animate);
-    }, []);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        linesRef.current = initializeLines();
+        const ctx = canvas.getContext('2d', { alpha: true });
 
-        // Visibility observer - pause when 70% scrolled out (threshold 0.3)
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                isVisibleRef.current = entry.isIntersecting;
-                // Cancel RAF completely when not visible to free main thread
-                if (!entry.isIntersecting) {
-                    cancelAnimationFrame(rafIdRef.current);
-                } else if (entry.isIntersecting && rafIdRef.current === 0) {
-                    // Restart animation when becoming visible again
-                    rafIdRef.current = requestAnimationFrame(animate);
-                }
-            },
-            { threshold: 0.3 }  // Pause earlier - when 70% scrolled out
-        );
-        observer.observe(canvas);
-
-        const ctx = canvas.getContext("2d", { alpha: true });
-        if (!ctx) return;
+        let animationFrameId: number;
+        let time = 0;
 
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-        const resize = () => {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            canvas.width = Math.floor(w * dpr);
-            canvas.height = Math.floor(h * dpr);
-
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.imageSmoothingEnabled = true;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
         };
 
-        resize();
-        window.addEventListener("resize", resize);
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-        // Start animation loop
-        rafIdRef.current = requestAnimationFrame(animate);
+        const numLines = 100; // Increased to 100 lines (50 pairs)
+        const bandCenterYRatio = 0.52;
+        // Compress the distance between pairs even further
+        const bandHeightRatio = 0.055;
+        // Reducing from 6.0 to 5.4 to soften the density of the core just a little bit
+        const spreadPower = 5.4;
+        const speed = -4.5; // "Blackhole wave moving bit fast"
+
+        const pulses = [
+            { x: 0, w: 0.15, h: 25, speed: 1.2 },
+            { x: 0.4, w: 0.20, h: 18, speed: 0.9 },
+            { x: 0.7, w: 0.12, h: 30, speed: 1.4 }
+        ];
+
+        const draw = () => {
+            if (!ctx) return;
+            const w = canvas.width;
+            const h = canvas.height;
+            const centerY = h * bandCenterYRatio;
+            const maxSpread = h * bandHeightRatio;
+
+            // Critical for "1st Image" look: Light Addition Blending & Clean Clear
+            ctx.clearRect(0, 0, w, h);
+            // "Center stroke should not be this white/glowing": REMOVED 'lighter' mode.
+            // Using standard alpha blending so lines layer up like paint, not light.
+
+            // "Not so shiny, subtle blend, normal shade"
+            const r = 110, g = 130, b = 160;
+
+            const numPairs = Math.floor(numLines / 2);
+
+            for (let i = 0; i < numLines; i++) {
+                const pairIndex = Math.floor(i / 2);
+                const isSecondInPair = i % 2 === 1;
+
+                // Normalized pair index -1 to 1
+                let pairT = (pairIndex / (numPairs - 1)) * 2 - 1;
+
+                const sign = Math.sign(pairT);
+                const absT = Math.abs(pairT);
+
+                // spread is power-based
+                // The power function makes pairs tighter in the center and more distant at the edges.
+                const pairSpread = sign * Math.pow(absT, spreadPower) * maxSpread;
+                const pairBaseY = centerY + pairSpread;
+
+                // In the center, lines in a pair are tightly packed (smaller distance)
+                // At the edges, they are slightly more distant.
+                // Restoring the edge spread for the two lines inside a pair back to 6.0 so they have normal distance
+                const innerDistance = 0.5 + (absT * 6.0); // 0.5px at center, 6.5px at edges
+                const lineOffset = isSecondInPair ? innerDistance / 2 : -innerDistance / 2;
+
+                const baseY = pairBaseY + lineOffset;
+
+                // "Thick waves... not as thick as center but thick": Outer lines ~1.5 to 2.0
+                const lineWidth = Math.max(1.5, 2.0 * (1 - Math.pow(absT, 0.5)));
+                // "upper and lower waves should not be that bright as centre core so reduce opacity of it by 3 or 4"
+                // This curve makes the waves slowly dim as they move toward the edges.
+                // At center (absT = 0), this is 1.0. At the very edge (absT = 1), this falls to 0.25 (1/4 the opacity).
+                const relativeDimming = 1.0 - (0.75 * Math.pow(absT, 1.5));
+
+                // "make vigneete only at last of waves at top and bottom"
+                // Push the threshold out to 0.90 so it ONLY fades the very extreme last 10% into total darkness
+                let vignetteFade = 1.0;
+                const edgeThreshold = 0.90;
+                if (absT > edgeThreshold) {
+                    // Normalize the fade to occur strictly between 0.90 and 1.0
+                    const overflow = (absT - edgeThreshold) / (1.0 - edgeThreshold);
+                    vignetteFade = Math.pow(1 - overflow, 2.0); // Smooth fall to black
+                }
+
+                // Combine the base density (0.6), the dimming effect (relativeDimming), and the final black fade (vignetteFade)
+                const opacity = 0.6 * relativeDimming * vignetteFade;
+
+                ctx.beginPath();
+                ctx.lineWidth = lineWidth * dpr;
+
+                // But let's create it for clarity
+                const grad = ctx.createLinearGradient(0, 0, w, 0);
+                grad.addColorStop(0, `rgba(${r},${g},${b},0)`);
+                // "Center stroke should also disappear": Fade out completely below center.
+                // From 0 to 0.4: ZERO opacity.
+                // From 0.4 to 0.6: Fade in.
+                // From 0.6 to 1: Full opacity.
+                grad.addColorStop(0.3, `rgba(${r},${g},${b},0)`);
+                grad.addColorStop(0.5, `rgba(${r},${g},${b},${opacity * 0.5})`);
+                grad.addColorStop(0.7, `rgba(${r},${g},${b},${opacity})`);
+                grad.addColorStop(1, `rgba(${r},${g},${b},${opacity})`);
+
+                ctx.strokeStyle = grad;
+
+                // Draw curve
+                const xStep = 10 * dpr;
+                let started = false;
+
+                for (let x = 0; x <= w; x += xStep) {
+                    const xNorm = x / w;
+
+                    // Step 1571 Loop Logic EXACTLY
+                    let yOffset = 0;
+
+                    const pRightToLeft = 1.2 - ((time * 0.15) % 1.4);
+
+                    // A single smooth, continuous bump. 
+                    // We completely removed the secondary "g2" bump which was causing the "U dip" in the middle.
+                    // Made the base slightly wider (multiplier 3 instead of 4) so it feels solid.
+                    const g1 = Math.exp(-Math.pow((xNorm - pRightToLeft) * 3, 2)) * 35 * dpr;
+
+                    const noise = Math.sin(xNorm * 10 + time * 2) * 2 * dpr;
+
+                    // Apply the single wave and the noise
+                    yOffset = (g1 + noise) * (1 - absT * 0.3);
+
+                    // "Start to fade away once it moved from center to completely fade away in left like a tail"
+                    // Left side (0 to 0.5): Fade strongly. Right side (0.5 to 1): Full opacity.
+                    // Using power curve for "tail" effect.
+                    const tailFade = xNorm < 0.5 ? Math.pow(xNorm * 2, 1.5) : 1;
+                    yOffset *= tailFade;
+
+                    if (!started) {
+                        ctx.moveTo(x, baseY + yOffset);
+                        started = true;
+                    } else {
+                        ctx.lineTo(x, baseY + yOffset);
+                    }
+                }
+
+                ctx.stroke();
+            }
+        };
+
+        const animate = () => {
+            time += 0.01;
+            draw();
+            animationFrameId = requestAnimationFrame(animate);
+        };
+
+        animate();
 
         return () => {
-            observer.disconnect();
-            window.removeEventListener("resize", resize);
-            cancelAnimationFrame(rafIdRef.current);
+            window.removeEventListener('resize', resizeCanvas);
+            cancelAnimationFrame(animationFrameId);
         };
-    }, [initializeLines, animate]);
+    }, []);
 
     return (
         <canvas
+            key="spectrum-waves-alpha-fix" // Force new context creation to ensure alpha:true works
             ref={canvasRef}
             className="absolute inset-0 w-full h-full pointer-events-none z-0"
-            style={{
-                filter: 'blur(0.25px)',
-                willChange: 'transform' // GPU hint
-            }}
         />
     );
 };

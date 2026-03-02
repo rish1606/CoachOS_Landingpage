@@ -153,7 +153,7 @@ const ModulesSection = () => {
                                 style={{ opacity: paraOpacity, y: paraY }}
                                 className="text-[#94A3B8] text-base leading-relaxed mb-6"
                             >
-                                Coach OS is modular—pick only what you need today, then add more as your gym scales. Every module plugs into one core, keeping your team and clients on a single connected experience.
+                                Coach OS is modular—pick only what you need today, then add more as your facility scales. Built for gyms, studios, and crossfit boxes alike. Every module plugs into one core, keeping your team and clients on a single connected experience.
                             </motion.p>
                             <motion.div
                                 style={{ opacity: hintOpacity }}

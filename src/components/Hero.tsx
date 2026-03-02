@@ -55,24 +55,24 @@ const Hero = () => {
 
             {/* Main content - LEFT aligned */}
             <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full">
-                <div className="max-w-lg">
+                <div className="max-w-2xl">
                     <motion.h1
-                        className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tight"
+                        className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-16 leading-[1.1] tracking-tight"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        Your Intelligent<br />
-                        Coaching System
+                        The Intelligent OS<br />
+                        for Fitness Businesses
                     </motion.h1>
 
                     <motion.p
-                        className="text-sm md:text-base text-white/40 mb-8 leading-relaxed"
+                        className="text-sm md:text-base text-white/40 mb-8 leading-relaxed max-w-lg"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.1 }}
                     >
-                        Seamlessly manage client progress with AI-driven insights. The future of fitness coaching is calm, precise, and powerful.
+                        The all-in-one platform for gyms, pilates studios, crossfits, and boxing centers. Manage memberships, scheduling, and client progress with AI-driven insights.
                     </motion.p>
 
                     <motion.div

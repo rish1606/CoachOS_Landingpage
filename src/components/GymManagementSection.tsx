@@ -112,7 +112,7 @@ const GymManagementSection = () => {
                             Core Operations Module
                         </p>
                         <h2 className="text-3xl md:text-5xl font-bold text-white leading-[1.1] tracking-tight">
-                            The operating system<br />for your gym.
+                            The operating system<br />for your fitness space.
                         </h2>
                     </div>
 
@@ -126,7 +126,7 @@ const GymManagementSection = () => {
                                     Your all-in-one<br />command center.
                                 </h3>
                                 <p className="text-[#94A3B8] text-sm leading-relaxed max-w-sm mb-6">
-                                    Everything you need to run day-to-day operations — member handling, access control, client workout and food logging, all in one place.
+                                    Everything you need to run day-to-day operations—whether you manage a pilates studio, boxing gym, or crossfit center. Handle memberships, access control, and client logging in one place.
                                 </p>
                                 <div className="flex flex-wrap gap-x-3 gap-y-2 text-[10px] text-white/30 uppercase tracking-widest font-medium">
                                     <span>Members</span>•<span>Access</span>•<span>Workouts</span>•<span>Nutrition</span>
